@@ -1,6 +1,9 @@
 package com.febs.auth.configure;
 
+import com.febs.auth.service.FebsUserDetailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,8 +12,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+@Order(2)
 @EnableWebSecurity
 public class FebsAuthWebSecurityConfigure extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private FebsUserDetailService userDetailService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
