@@ -17,6 +17,10 @@ eureka:
       defaultZone: http://febs:123456@localhost:8001/register/eureka/
 
 zuul:
+  SendErrorFilter:
+    error:
+      disable:
+        true
   routes:
     auth:
       path: /auth/**
