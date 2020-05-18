@@ -3,6 +3,7 @@ package com.febs.server.test;
 import com.febs.common.annotation.EnableFebsAuthExceptionHandler;
 import com.febs.common.annotation.EnableFebsOauth2FeignClient;
 import com.febs.common.annotation.EnableFebsServerProtect;
+import com.febs.common.annotation.FebsCloudApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -12,9 +13,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 @EnableDiscoveryClient
 @SpringBootApplication
 @EnableFeignClients
-@EnableFebsAuthExceptionHandler
-@EnableFebsServerProtect
-@EnableFebsOauth2FeignClient
+@FebsCloudApplication
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class FebsServerTestApplication {
 

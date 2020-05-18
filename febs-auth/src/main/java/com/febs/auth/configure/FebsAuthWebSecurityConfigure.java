@@ -19,10 +19,8 @@ public class FebsAuthWebSecurityConfigure extends WebSecurityConfigurerAdapter {
     @Autowired
     private FebsUserDetailService userDetailService;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -42,6 +40,6 @@ public class FebsAuthWebSecurityConfigure extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder);
     }
 }
