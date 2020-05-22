@@ -62,7 +62,7 @@ public class FebsWebConfigure {
     }
 
     private SecurityScheme securityScheme(FebsSwaggerProperties properties) {
-        GrantType grantType = new ResourceOwnerPasswordCredentialsGrant("http://localhost:8301/auth/oauth/token");
+        GrantType grantType = new ResourceOwnerPasswordCredentialsGrant(properties.getGrantUrl());
 
         return new OAuthBuilder()
                 .name(properties.getName())
