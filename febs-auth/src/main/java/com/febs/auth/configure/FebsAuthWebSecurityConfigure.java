@@ -37,6 +37,7 @@ public class FebsAuthWebSecurityConfigure extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
                 .requestMatchers()
                 .antMatchers("/oauth/**")
+
                 .and()
                 .authorizeRequests()
                 .antMatchers("/oauth/**").authenticated()

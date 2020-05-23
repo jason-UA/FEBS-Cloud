@@ -29,6 +29,8 @@ public class FebsAuthWebResourceServerConfigure extends ResourceServerConfigurer
                 .requestMatchers().antMatchers("/**")
                 .and()
                 .authorizeRequests()
+                .and()
+                .authorizeRequests().antMatchers("/actuator/**").permitAll()
                 .antMatchers(anonUrls).permitAll()
                 .antMatchers("/**").authenticated()
                 .and().httpBasic();
