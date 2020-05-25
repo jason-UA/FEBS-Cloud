@@ -12,17 +12,18 @@ spring:
         url: http://${febs-monitor-admin}:8401
         username: febs
         password: 123456
+  sleuth:
+    sampler:
+      probability: 1
+  rabbitmq:
+    host: ${rabbitmq.url}
+    port: 5672
+    username: febs
+    password: 123456
   zipkin:
+    base-url: ${zipkin.url}
     sender:
       type: rabbit
-    sleuth:
-      sampler:
-        probability: 1
-    rabbitmq:
-      host: ${rabbitmq.url}
-      port: 5672
-      username: febs
-      password: 123456
 
 
 info:
