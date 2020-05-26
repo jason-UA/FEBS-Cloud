@@ -4,14 +4,30 @@ server:
 spring:
   application:
     name: FEBS-Gateway
-  autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
   boot:
     admin:
       client:
         url: http://${febs-monitor-admin}:8401
         username: febs
         password: 123456
+  cloud:
+    gateway:
+      default-filters:
+        - StripPrefix=1
+      routes:
+        - id: FEBS-Auth
+          uri: lb://FEBS-Auth
+          predicates:
+            - Path=/auth/**
+        - id: FEBS-Server-System
+          uri: lb://FEBS-Server-System
+          predicates:
+            - Path=/system/**
+        - id: FEBS-Server-test
+          uri: lb://FEBS-Server-Test
+          predicates:
+            - Path=/test/**
+
 
 info:
   app:
@@ -23,7 +39,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: '*'
+        include: health,info,gateway
   endpoint:
     health:
       show-details: ALWAYS
