@@ -24,6 +24,10 @@ spring:
     base-url: ${zipkin.url}
     sender:
       type: rabbit
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${nacos.url}:8001
 
 
 info:
@@ -40,17 +44,6 @@ management:
   endpoint:
     health:
       show-details: ALWAYS
-
-eureka:
-  instance:
-    lease-renewal-interval-in-seconds: 20
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    instance-info-replication-interval-seconds: 30
-    registry-fetch-interval-seconds: 3
-    serviceUrl:
-      defaultZone: http://febs:123456@${febs-register}:8001/register/eureka/
 
 
 security:
