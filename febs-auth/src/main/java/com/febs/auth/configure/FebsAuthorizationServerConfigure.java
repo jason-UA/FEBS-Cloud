@@ -19,8 +19,12 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.token.DefaultUserAuthenticationConverter;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
 @Configuration
@@ -30,8 +34,6 @@ public class FebsAuthorizationServerConfigure extends AuthorizationServerConfigu
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
-    private RedisConnectionFactory redisConnectionFactory;
-    @Autowired
     private FebsUserDetailService userDetailService;
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -39,22 +41,6 @@ public class FebsAuthorizationServerConfigure extends AuthorizationServerConfigu
     private FebsAuthProperties authProperties;
     @Autowired
     private FebsWebResponseExceptionTranslator exceptionTranslator;
-
-    @Bean
-    public TokenStore tokenStore() {
-        return new RedisTokenStore(redisConnectionFactory);
-    }
-
-    @Primary
-    @Bean
-    public DefaultTokenServices defaultTokenServices() {
-        DefaultTokenServices tokenServices = new DefaultTokenServices();
-        tokenServices.setTokenStore(tokenStore());
-        tokenServices.setSupportRefreshToken(true);
-        tokenServices.setAccessTokenValiditySeconds(authProperties.getAccessTokenValiditySeconds());
-        tokenServices.setRefreshTokenValiditySeconds(authProperties.getRefreshTokenValiditySeconds());
-        return tokenServices;
-    }
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -82,9 +68,25 @@ public class FebsAuthorizationServerConfigure extends AuthorizationServerConfigu
     @SuppressWarnings("all")
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints.tokenStore(tokenStore())
+                .accessTokenConverter(jwtAccessTokenConverter())
                 .userDetailsService(userDetailService)
                 .authenticationManager(authenticationManager)
-                .tokenServices(defaultTokenServices())
                 .exceptionTranslator(exceptionTranslator);
+    }
+
+    @Bean TokenStore tokenStore() {
+        return new JwtTokenStore(jwtAccessTokenConverter());
+    }
+
+    @Bean
+    public JwtAccessTokenConverter jwtAccessTokenConverter() {
+        JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
+        DefaultAccessTokenConverter defaultAccessTokenConverter = (DefaultAccessTokenConverter)
+                jwtAccessTokenConverter.getAccessTokenConverter();
+        DefaultUserAuthenticationConverter userAuthenticationConverter = new DefaultUserAuthenticationConverter();
+        userAuthenticationConverter.setUserDetailsService(userDetailService);
+        defaultAccessTokenConverter.setUserTokenConverter(userAuthenticationConverter);
+        jwtAccessTokenConverter.setSigningKey("febs");
+        return jwtAccessTokenConverter;
     }
 }
