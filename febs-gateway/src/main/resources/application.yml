@@ -19,14 +19,37 @@ spring:
           uri: lb://FEBS-Auth
           predicates:
             - Path=/auth/**
+          filters:
+            - name: Hystrix
+              args:
+                name: authfallback
+                fallbackUri: forward:/fallback/FEBS-Auth
         - id: FEBS-Server-System
           uri: lb://FEBS-Server-System
           predicates:
             - Path=/system/**
+          filters:
+            - name: Hystrix
+              args:
+                name: systemfallback
+                fallbackUri: forward:/fallback/FEBS-Server-System
         - id: FEBS-Server-test
           uri: lb://FEBS-Server-Test
           predicates:
             - Path=/test/**
+          filters:
+            - name: Hystrix
+              args:
+                name: testfallback
+                fallbackUri: forward:/fallback/FEBS-Server-Test
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000
 
 
 info:
@@ -54,30 +77,3 @@ eureka:
     registry-fetch-interval-seconds: 3
     serviceUrl:
       defaultZone: http://febs:123456@${febs-register}:8001/register/eureka/
-
-zuul:
-  SendErrorFilter:
-    error:
-      disable:
-        true
-  routes:
-    auth:
-      path: /auth/**
-      serviceId: FEBS-Auth
-      sensitiveHeaders: "*"
-    system:
-      path: /system/**
-      serviceId: FEBS-Server-System
-      sensitiveHeaders: "*"
-    test:
-      path: /test/**
-      serviceId: FEBS-Server-Test
-      sensitiveHeaders: "*"
-  retryable: true
-  ignored-services: "*"
-  ribbon:
-    eager-load:
-      enabled: true
-
-ribbon:
-  ReadTimeout: 3000

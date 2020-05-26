@@ -1,5 +1,6 @@
 package com.febs.gateway.handler;
 
+import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowException;
 import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
@@ -47,6 +48,8 @@ public class FebsGatewayExceptionHandler extends DefaultErrorWebExceptionHandler
         } else if (error instanceof ResponseStatusException
                 && StringUtils.containsIgnoreCase(error.getMessage(), HttpStatus.NOT_FOUND.toString())) {
             errorMessage = "未找到该资源";
+        } else if (error instanceof ParamFlowException) {
+            errorMessage = "访问频率超限";
         } else {
             errorMessage = "网关转发异常";
         }

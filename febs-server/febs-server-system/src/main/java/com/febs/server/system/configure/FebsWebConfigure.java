@@ -34,7 +34,7 @@ public class FebsWebConfigure {
         FebsSwaggerProperties swaggerProperties = properties.getSwagger();
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.febs.server.system.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.febs.server.system.com.febs.gateway.controller"))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(apiInfo(swaggerProperties))
